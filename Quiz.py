@@ -41,7 +41,7 @@ def init():
             if inputAnswer == "s": 
                 printStats()
                 inputAnswer = getQuestionInput(curr)
-                break
+                continue
             print("Wrong! Try again.")
             gotQuestionRight = False
             inputAnswer = getQuestionInput(curr)
