@@ -5,7 +5,7 @@ import os
 os.system("cls")
 
 def getTimeFrom(start):
-    return str(round(time.time() - start)) + "s"
+    return str(round(time.time() - start) + 1) + "s"
 
 def getQuestionInput(curr):
     return (input(f"{curr}² = "))
