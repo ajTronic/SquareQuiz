@@ -2,50 +2,57 @@ import random
 import time
 import os
 
+
 os.system("cls")
 
 def getTimeFrom(start):
-    return str(round(time.time() - start) + 1) + "s"
+    return round(time.time() - start)
 
 def getQuestionInput(curr):
-    return (input(f"{curr}² = "))
+    return (input(f"{curr}² ({curr ** 2}) = "))
 
 def printStats():
     print("Stats: ")
-    print(f"   Questions right: {stats['percentage']()}%")
-    print(f"   Total time elapsed: {stats['timeElapsed'](startTime)}")
-    print(f"   Question time elapsed: {stats['timeElapsed'](timeOnQuestion)}")
-    print(f"   Questions asked: {stats['questionsAsked']}")
-    print(f"   Questions right: {stats['questionsRight']}")
+    print(f"   Questions right: {round(stats['questionsRight'])} / {stats['questionsAsked']}: {stats['percentage']()}%")
+    print(f"   Avarage speed: {stats['avgSpd']()}s")
 
+def getPercentage(total, correct):
+    if total == 0 or correct == 0: return 0
+    return (correct / total) * 100
+
+startTime = time.time()
 
 stats = {
     "questionsAsked": 0,
     "questionsRight": 0,
-    "timeElapsed": (lambda time : getTimeFrom(time)),
-    "percentage": (lambda : stats["questionsRight"] / stats["questionsAsked"] * 100)
+    "avgSpd": lambda: (getTimeFrom(startTime) / max(stats["questionsAsked"], 1)),
+    "percentage": lambda: (getPercentage(stats["questionsAsked"], stats["questionsRight"])),
 }
 
-startTime = time.time()
-timeOnQuestion = time.time()
-
 def init():
+    currQuestion = None
+    newQuestion = True
     while True:
-        timeOnQuestion = time.time()
-        curr = round(random.random() * 99)
-        stats["questionsAsked"] += 1
-        gotQuestionRight = True
-        inputAnswer = getQuestionInput(curr)
-        while inputAnswer.rstrip() != str(pow(curr, 2)):
-            if inputAnswer == "q": return
-            if inputAnswer == "s": 
-                printStats()
-                inputAnswer = getQuestionInput(curr)
+        if newQuestion: 
+            currQuestion = round(random.random() * 99)
+        inputAnswer = getQuestionInput(currQuestion).rstrip() # string
+        if inputAnswer == "q": return
+        elif inputAnswer == "s": 
+            printStats() 
+            newQuestion = False
+        else: # check question
+            stats["questionsAsked"] += 1
+            try:
+                inputInt = int(inputAnswer)
+            except:
+                print('Invalid Number.')
                 continue
-            print("Wrong! Try again.")
-            gotQuestionRight = False
-            inputAnswer = getQuestionInput(curr)
-        if gotQuestionRight: stats["questionsRight"] += 1
-        print("Correct!")
+            if currQuestion ** 2 == inputInt:
+                print("Correct!")
+                newQuestion = True
+                stats["questionsRight"] += 1
+            else:
+                print("WRONG. Try again")
+                newQuestion = False
 
 init()
