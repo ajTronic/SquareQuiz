@@ -1,10 +1,24 @@
 import random
 import time
 import os
+import configparser
 
 os.system("cls")
 
-def getQuestionInput(curr): return (input(f"{curr} ({curr**2})² = "))
+startTime = time.time()
+settings = configparser.ConfigParser()
+settings.read("settings.ini")
+
+stats = {
+    "questionsAsked": 0,
+    "questionsRight": 0,
+}
+
+def getQuestionInput(curr): 
+    if settings.get("base", "debugMode") == "True":
+        return (input(f"{curr}² ({curr**2}) = "))
+    else: 
+        return (input(f"{curr}² = "))
 
 def printStats():
     if stats["questionsAsked"] > 0:
@@ -16,13 +30,6 @@ def printStats():
         }: {round(stats['questionsRight'] / stats['questionsAsked'] * 100)}%""")
         print(f"   Average time: {round(time.time() - startTime / stats['questionsRight'])}s")
     else: print("No stats to show.")
-
-startTime = time.time()
-
-stats = {
-    "questionsAsked": 0,
-    "questionsRight": 0,
-}
 
 def init():
     currQuestion = None
