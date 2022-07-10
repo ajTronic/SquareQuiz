@@ -2,31 +2,26 @@ import random
 import time
 import os
 
-
 os.system("cls")
 
-def getTimeFrom(start):
-    return round(time.time() - start)
-
-def getQuestionInput(curr):
-    return (input(f"{curr}² ({curr ** 2}) = "))
+def getQuestionInput(curr): return (input(f"{curr} ({curr**2})² = "))
 
 def printStats():
-    print("Stats: ")
-    print(f"   Questions right: {round(stats['questionsRight'])} / {stats['questionsAsked']}: {stats['percentage']()}%")
-    print(f"   Avarage speed: {stats['avgSpd']()}s")
-
-def getPercentage(total, correct):
-    if total == 0 or correct == 0: return 0
-    return (correct / total) * 100
+    if stats["questionsAsked"] > 0:
+        print("Stats: ")
+        print(f"""   Questions right: {
+            stats['questionsRight']
+        } / {
+            stats['questionsAsked']
+        }: {round(stats['questionsRight'] / stats['questionsAsked'] * 100)}%""")
+        print(f"   Average time: {round(time.time() - startTime / stats['questionsRight'])}s")
+    else: print("No stats to show.")
 
 startTime = time.time()
 
 stats = {
     "questionsAsked": 0,
     "questionsRight": 0,
-    "avgSpd": lambda: (getTimeFrom(startTime) / max(stats["questionsAsked"], 1)),
-    "percentage": lambda: (getPercentage(stats["questionsAsked"], stats["questionsRight"])),
 }
 
 def init():
@@ -40,6 +35,7 @@ def init():
         elif inputAnswer == "s": 
             printStats() 
             newQuestion = False
+        elif inputAnswer == "n": os.system("py Quiz.py")
         else: # check question
             stats["questionsAsked"] += 1
             try:
