@@ -15,7 +15,7 @@ stats = {
 }
 
 def getQuestionInput(curr): 
-    if settings.get("base", "debugMode") == "True":
+    if settings.get("debug", "debugMode") == "True":
         return (input(f"{curr}² ({curr**2}) = "))
     else: 
         return (input(f"{curr}² = "))
@@ -36,7 +36,12 @@ def init():
     newQuestion = True
     while True:
         if newQuestion: 
-            currQuestion = round(random.random() * 99)
+            currQuestion = round(
+                random.randint(
+                    int(settings.get("question", "min")),
+                    int(settings.get("question", "max")),
+                )
+            )
         inputAnswer = getQuestionInput(currQuestion).rstrip() # string
         if inputAnswer == "q": return
         elif inputAnswer == "s": 
