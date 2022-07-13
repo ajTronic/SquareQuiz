@@ -7,7 +7,7 @@ os.system("cls")
 
 startTime = time.time()
 settings = configparser.ConfigParser()
-settings.read("settings.ini")
+settings.read("d:\Code\Python\SquareQuiz\settings.ini")
 
 stats = {
     "questionsAsked": 0,
@@ -28,7 +28,7 @@ def printStats():
         } / {
             stats['questionsAsked']
         }: {round(stats['questionsRight'] / stats['questionsAsked'] * 100)}%""")
-        print(f"   Average time: {round(time.time() - startTime / stats['questionsRight'])}s")
+        print(f"   Average time: {round((time.time() - startTime) / stats['questionsRight'])}s")
     else: print("No stats to show.")
 
 def init():
