@@ -34,7 +34,8 @@ def printStats():
 def init():
     currQuestion = None
     newQuestion = True
-    while True:
+    question = 0
+    while question < int(settings.get("question", "numQuestions")):
         if newQuestion: 
             currQuestion = round(
                 random.randint(
@@ -62,5 +63,9 @@ def init():
             else:
                 print("WRONG. Try again")
                 newQuestion = False
+        question += 1
+    if stats["questionsRight"] < 0: printStats()
+    print("\nThank you for playing SQUAREQUIZ™.\n")
+
 
 init()
