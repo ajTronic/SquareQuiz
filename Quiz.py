@@ -28,7 +28,8 @@ def printStats():
         } / {
             stats['questionsAsked']
         }: {round(stats['questionsRight'] / stats['questionsAsked'] * 100)}%""")
-        print(f"   Average time: {round((time.time() - startTime) / stats['questionsRight'])}s")
+        if stats["questionsRight"] > 0:
+            print(f"   Average time: {round((time.time() - startTime) / stats['questionsRight'])}s")
     else: print("No stats to show.")
 
 def init():
@@ -64,8 +65,7 @@ def init():
                 print("WRONG. Try again")
                 newQuestion = False
         question += 1
-    if stats["questionsRight"] < 0: printStats()
+    printStats()
     print("\nThank you for playing SQUAREQUIZ™.\n")
-
 
 init()
