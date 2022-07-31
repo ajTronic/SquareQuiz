@@ -49,6 +49,7 @@ def init():
         elif inputAnswer == "s": 
             printStats() 
             newQuestion = False
+            continue
         elif inputAnswer == "n": os.system("py Quiz.py")
         else: # check question
             stats["questionsAsked"] += 1
