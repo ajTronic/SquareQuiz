@@ -1,74 +1,80 @@
 import random
-import time
 import os
 import configparser
+import Printer
+import time
+
 
 class Game:
     def __init__(self, settingsFile):
+        # settings
+        settings = configparser.ConfigParser()
+        settings.read(settingsFile)
+        question = settings["question"]
+        self.min = int(question["min"])
+        self.max = int(question["max"])
+        self.mode = question["mode"]
+        self.numQuestions = int(question["numQuestions"])
+        self.isDebug = settings.get("debug", "on") == "True"
+
         self.startTime = time.time()
-        self.settings = configparser.ConfigParser()
-        self.settings.read(settingsFile)
-        self.stats = {
+        self.statsData = {
             "questionsAsked": 0,
             "questionsRight": 0,
         }
 
-    def getQuestionInput(self, curr): 
-        if self.settings.get("debug", "debugMode") == "True":
-            return (input(f"{curr}² ({curr**2}) = "))
-        else: 
-            return (input(f"{curr}² = "))
+    def getQuestionInput(self, curr):
+        if self.isDebug:
+            return input(f"{curr}² ({curr**2}) = ")
+        else:
+            return input(f"{curr}² = ")
 
-    def printStats(self):
-        if self.stats["questionsAsked"] > 0:
-            print("stats: ")
-            print(f"""   Questions right: {
-                self.stats['questionsRight']
-            } / {
-                self.stats['questionsAsked']
-            }: {round(self.stats['questionsRight'] / self.stats['questionsAsked'] * 100)}%""")
-            if self.stats["questionsRight"] > 0:
-                print(f"   Average time: {round((time.time() - self.startTime) / self.stats['questionsRight'])}s")
-        else: print("No stats to show.")
+    def stats(self):
+        if self.statsData["questionsAsked"] > 0:
+            Printer.printStats(self.statsData, self.startTime)
+        else:
+            Printer.noStats()
 
     def start(self):
         currQuestion = None
         newQuestion = True
         question = 0
-        while question < int(self.settings.get("question", "numQuestions")):
-            if newQuestion: 
-                currQuestion = round(
+        while question < self.numQuestions:
+            if newQuestion:
+                currQuestion = currQuestion = round(
                     random.randint(
-                        int(self.settings.get("question", "min")),
-                        int(self.settings.get("question", "max")),
+                        self.min,
+                        self.max,
                     )
                 )
-            inputAnswer = self.getQuestionInput(currQuestion).rstrip() # string
-            if inputAnswer == "q": return
-            elif inputAnswer == "s": 
-                self.printStats() 
-                newQuestion = False
+            inputAnswer = self.getQuestionInput(currQuestion).rstrip()  # string
+            if inputAnswer == "q":
+                return
+            elif inputAnswer == "s":
+                self.stats()
                 continue
-            elif inputAnswer == "n": os.system("py Quiz.py")
-            else: # check question
-                self.stats["questionsAsked"] += 1
+            elif inputAnswer == "n":
+                os.system("py Quiz.py")
+            else:  # check question
+                self.statsData["questionsAsked"] += 1
                 try:
                     inputInt = int(inputAnswer)
                 except:
-                    print('Invalid Number.')
+                    Printer.invalid()
                     continue
-                if currQuestion ** 2 == inputInt:
-                    print("Correct!")
+                if currQuestion**2 == inputInt:
+                    Printer.correct()
                     newQuestion = True
-                    self.stats["questionsRight"] += 1
+                    self.statsData["questionsRight"] += 1
                 else:
-                    print("WRONG. Try again")
+                    Printer.wrong()
                     newQuestion = False
             question += 1
-        self.printStats()
-        print("\nThank you for playing SQUAREQUIZ™.\n")
+        self.stats()
+        Printer.finish()
+
 
 os.system("cls")
 
-game = Game('d:\Code\Python\SquareQuiz\settings.ini')
+game = Game("d:\Code\Python\SquareQuiz\settings.ini")
 game.start()
