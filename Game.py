@@ -12,6 +12,19 @@ class StatsData:
     questionsRight: int
 
 
+class Question:
+    def __init__(self):
+        self.__factor1 = 0
+        self.__factor2 = 0
+
+    def setFactors(self, newval1, newval2):
+        self.__factor1 = newval1
+        self.__factor2 = newval2
+
+    def getFactors(self):
+        return [self.__factor1, self.__factor2]
+
+
 class Game:
     def __init__(self, settingsFile):
         # settings
