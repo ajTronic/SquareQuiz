@@ -1,8 +1,15 @@
+from dataclasses import dataclass
 import random
 import os
 import configparser
 import Printer
 import time
+
+
+@dataclass()
+class StatsData:
+    questionsAsked: int
+    questionsRight: int
 
 
 class Game:
@@ -18,10 +25,7 @@ class Game:
         self.isDebug = settings.get("debug", "on") == "True"
 
         self.startTime = time.time()
-        self.statsData = {
-            "questionsAsked": 0,
-            "questionsRight": 0,
-        }
+        self.statsData = StatsData(0, 0)
 
     def getQuestionInput(self, curr):
         if self.isDebug:
@@ -30,7 +34,7 @@ class Game:
             return input(f"{curr}² = ")
 
     def stats(self):
-        if self.statsData["questionsAsked"] > 0:
+        if self.statsData.questionsAsked > 0:
             Printer.printStats(self.statsData, self.startTime)
         else:
             Printer.noStats()
@@ -56,7 +60,7 @@ class Game:
             elif inputAnswer == "n":
                 os.system("py Quiz.py")
             else:  # check question
-                self.statsData["questionsAsked"] += 1
+                self.statsData.questionsAsked += 1
                 try:
                     inputInt = int(inputAnswer)
                 except:
@@ -65,7 +69,7 @@ class Game:
                 if currQuestion**2 == inputInt:
                     Printer.correct()
                     newQuestion = True
-                    self.statsData["questionsRight"] += 1
+                    self.statsData.questionsRight += 1
                 else:
                     Printer.wrong()
                     newQuestion = False

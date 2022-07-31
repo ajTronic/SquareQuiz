@@ -5,14 +5,14 @@ def printStats(stats, startTime):
     print("stats: ")
     print(
         f"""   Questions right: {
-            stats['questionsRight']
+            stats.questionsRight
         } / {
-            stats['questionsAsked']
-        }: {round(stats['questionsRight'] / stats['questionsAsked'] * 100)}%"""
+            stats.questionsAsked
+        }: {round(stats.questionsRight / stats.questionsAsked * 100)}%"""
     )
-    if stats["questionsRight"] > 0:
+    if stats.questionsRight > 0:
         print(
-            f"   Average time: {round((time.time() - startTime) / stats['questionsRight'])}s"
+            f"   Average time: {round((time.time() - startTime) / stats.questionsRight)}s"
         )
 
 
