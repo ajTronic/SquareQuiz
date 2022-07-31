@@ -1,28 +1,10 @@
-from dataclasses import dataclass
 import random
 import os
 import configparser
 import Printer
 import time
-
-
-@dataclass()
-class StatsData:
-    questionsAsked: int
-    questionsRight: int
-
-
-class Question:
-    def __init__(self):
-        self.__factor1 = 0
-        self.__factor2 = 0
-
-    def setFactors(self, newval1, newval2):
-        self.__factor1 = newval1
-        self.__factor2 = newval2
-
-    def getFactors(self):
-        return [self.__factor1, self.__factor2]
+from Question import Question
+from StatsData import StatsData
 
 
 class Game:
@@ -42,9 +24,9 @@ class Game:
 
     def getQuestionInput(self, curr):
         if self.isDebug:
-            return input(f"{curr}² ({curr**2}) = ")
+            return input(f"{curr[0]} * {curr[1]} ({curr[0] * curr[1]}) = ")
         else:
-            return input(f"{curr}² = ")
+            return input(f"{curr[0]} * {curr[1]} = ")
 
     def stats(self):
         if self.statsData.questionsAsked > 0:
@@ -53,25 +35,30 @@ class Game:
             Printer.noStats()
 
     def start(self):
-        currQuestion = None
         newQuestion = True
-        question = 0
-        while question < self.numQuestions:
+        questionNum = 0
+        isSquaring = self.mode == "squaring"
+        while questionNum < self.numQuestions:
             if newQuestion:
-                currQuestion = round(
-                    random.randint(
-                        self.min,
-                        self.max,
+                currQuestion = None
+                if isSquaring:
+                    factor = round(random.randint(self.min, self.max))
+                    currQuestion = Question(factor, factor)
+                elif self.mode == "multiplication":
+                    currQuestion = Question(
+                        round(random.randint(self.min, self.max)),
+                        round(random.randint(self.min, self.max)),
                     )
-                )
-            inputAnswer = self.getQuestionInput(currQuestion).rstrip()  # string
+                questionFactors = currQuestion.getFactors()
+            inputAnswer = self.getQuestionInput(questionFactors).rstrip()  # string
             if inputAnswer == "q":
                 return
             elif inputAnswer == "s":
                 self.stats()
+                newQuestion = False
                 continue
             elif inputAnswer == "n":
-                os.system("py Quiz.py")
+                os.system("py Game.py")
             else:  # check question
                 self.statsData.questionsAsked += 1
                 try:
@@ -79,14 +66,14 @@ class Game:
                 except:
                     Printer.invalid()
                     continue
-                if currQuestion**2 == inputInt:
+                if questionFactors[0] * questionFactors[1] == inputInt:
                     Printer.correct()
                     newQuestion = True
                     self.statsData.questionsRight += 1
                 else:
                     Printer.wrong()
                     newQuestion = False
-            question += 1
+            questionNum += 1
         self.stats()
         Printer.finish()
 
