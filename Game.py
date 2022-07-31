@@ -45,7 +45,7 @@ class Game:
         question = 0
         while question < self.numQuestions:
             if newQuestion:
-                currQuestion = currQuestion = round(
+                currQuestion = round(
                     random.randint(
                         self.min,
                         self.max,
